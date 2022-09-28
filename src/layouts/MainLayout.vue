@@ -3,8 +3,11 @@
     <q-header elevated class="bg-primary text-white">
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="toggleDrawer" />
-        <q-icon name="handshake" size="md" />
-        <q-toolbar-title> TetherYo! </q-toolbar-title>
+        <div class="absolute-center">
+          <q-toolbar-title>
+            <q-icon name="handshake" size="md" /> TetherYo!
+          </q-toolbar-title>
+        </div>
       </q-toolbar>
     </q-header>
     <q-drawer
@@ -29,7 +32,7 @@
             <q-item-section> Tether Sat </q-item-section>
           </q-item>
 
-          <q-item active clickable v-ripple>
+          <q-item clickable v-ripple to="buy">
             <q-item-section avatar>
               <q-icon name="add_shopping_cart" />
             </q-item-section>
@@ -39,7 +42,7 @@
 
           <q-separator />
 
-          <q-item clickable v-ripple>
+          <q-item clickable v-ripple to="login">
             <q-item-section avatar>
               <q-icon name="person" />
             </q-item-section>
@@ -56,9 +59,9 @@
 
     <q-footer elevated class="bg-grey-8 text-white">
       <q-toolbar>
-        <q-icon name="handshake" size="md" />
-        <q-toolbar-title>
-          <div>TetherYo!</div>
+        <q-toolbar-title class="absolute-center">
+          <q-icon name="handshake" size="md" />
+          TetherYo!
         </q-toolbar-title>
       </q-toolbar>
     </q-footer>
