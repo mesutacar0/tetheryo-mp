@@ -3,11 +3,13 @@
     <q-header elevated class="bg-primary text-white">
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="toggleDrawer" />
-        <div class="absolute-center">
-          <q-toolbar-title>
-            <q-icon name="handshake" size="md" /> TetherYo!
-          </q-toolbar-title>
-        </div>
+
+        <q-toolbar-title>
+          <span></span>
+          <q-icon color="black" name="fa-solid fa-handshake" size="md" />
+          TetherYo!
+        </q-toolbar-title>
+        <q-btn dense flat round icon="logout" @click="signOut" />
       </q-toolbar>
     </q-header>
     <q-drawer
@@ -59,10 +61,20 @@
 
     <q-footer elevated class="bg-grey-8 text-white">
       <q-toolbar>
-        <q-toolbar-title class="absolute-center">
-          <q-icon name="handshake" size="md" />
+        <q-toolbar-title>
+          <q-icon name="fas fa-handshake" size="md" />
           TetherYo!
         </q-toolbar-title>
+        <q-btn
+          round
+          dense
+          outline
+          icon="phone"
+          class="q-mr-xs"
+          color="secondary"
+          href="https://api.whatsapp.com/send?phone=905077530489&text=Merhaba%20TetherYo!"
+          target="_blank"
+        />
       </q-toolbar>
     </q-footer>
   </q-layout>
@@ -70,19 +82,22 @@
 
 <script>
 import { ref } from "vue";
-import { fasFont } from "@quasar/extras/fontawesome-v6";
+import { auth } from "src/boot/firebase";
 
 export default {
   setup() {
     const drawer = ref(false);
-
-    const miniState = ref(false);
+    const miniState = ref(true);
 
     return {
       miniState,
       drawer,
       toggleDrawer() {
         drawer.value = !drawer.value;
+      },
+      signOut() {
+        auth.signOut();
+        window.location.reload();
       },
     };
   },

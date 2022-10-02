@@ -6,9 +6,9 @@
       </q-card-section>
 
       <q-card-section>
-        <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
+        <q-form class="q-gutter-md">
           <q-input
-            v-model="email"
+            v-model="User.email"
             filled
             type="email"
             hint="Email adresinizi girin"
@@ -22,7 +22,7 @@
             </template>
           </q-input>
           <q-input
-            v-model="password"
+            v-model="User.password"
             filled
             :type="isPwd ? 'password' : 'text'"
             hint="Sifrenizi girin"
@@ -50,14 +50,15 @@
               color="primary"
               flat
               class="q-ml-sm"
-              @click="onReset"
             />
           </div>
         </q-form>
       </q-card-section>
 
       <q-card-actions class="bg-primary text-white" align="around">
-        <q-btn flat>Hesabin yoksa hemen olustur!</q-btn>
+        <q-btn flat @click.prevent="toRegister"
+          >Hesabin yoksa hemen olustur!</q-btn
+        >
       </q-card-actions>
     </q-card>
   </div>
@@ -66,34 +67,36 @@
 <script>
 import { useQuasar } from "quasar";
 import { ref } from "vue";
+import { User } from "src/model/user";
+import { auth } from "src/boot/firebase";
 
 export default {
   name: "LoginPage",
   data() {
     const $q = useQuasar();
-
     return {
-      email: "",
-      password: "",
-      isPwd: true,
+      User: {},
+      isPwd: ref(true),
     };
   },
   methods: {
     signIn() {
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(this.email, this.password)
+      auth
+        .signInWithEmailAndPassword(this.User.email, this.User.password)
         .then(() => {
-          this.$router.push({ name: "Sell" });
+          this.$router.push({ name: "Buy" });
         })
         .catch((err) => {
-          $q.notify({
+          this.$q.notify({
             color: "red-5",
             textColor: "white",
             icon: "warning",
             message: err.message,
           });
         });
+    },
+    toRegister() {
+      this.$router.push({ name: "Register" });
     },
   },
 };

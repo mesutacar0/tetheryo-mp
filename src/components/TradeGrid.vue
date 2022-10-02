@@ -1,8 +1,60 @@
 <template>
   <div class="q-pa-md">
-    <q-table title="Treats" :rows="rows" :columns="columns" row-key="name">
+    <q-dialog v-model="confirm" persistent>
+      <q-card>
+        <q-card-section class="row items-center">
+          <q-avatar icon="help" color="primary" text-color="white" />
+          <span class="q-ml-sm"
+            >Tether: {{ order.quantity }} <br />
+            Dolar: {{ order.price }} <br />
+            Komisyon: {{ commission }}<br />
+            Oran: {{ rate }}<br />
+            Toplam Odeyeceginiz:
+            {{ order.price + commission }} <br /><br />
+            Islemi onayliyor musunuz?</span
+          >
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Iptal" color="primary" v-close-popup />
+          <q-btn
+            flat
+            label="Islemi Onayla"
+            color="primary"
+            @click="confirmTrade"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="cancelDialog" persistent>
+      <q-card>
+        <q-card-section class="row items-center">
+          <q-avatar icon="help" color="primary" text-color="white" />
+          <span class="q-ml-sm"
+            >Islemi iptal etmek istediginize emin misiniz?</span
+          >
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Iptal" color="primary" v-close-popup />
+          <q-btn
+            flat
+            label="Islemi Onayla"
+            color="primary"
+            @click="cancelTrade"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-table
+      :rows="orders"
+      :columns="columns"
+      row-key="id"
+      pagination.rowsPerPage="20"
+    >
       <template v-slot:top>
-        <new-trade></new-trade>
+        <NewTrade />
       </template>
       <template v-slot:header="props">
         <q-tr :props="props">
@@ -22,7 +74,7 @@
           </q-td>
           <q-td auto-width>
             <q-btn
-              size="sm"
+              size="md"
               color="accent"
               round
               dense
@@ -30,15 +82,54 @@
               :icon="props.expand ? 'remove' : 'add'"
             />
           </q-td>
-          <q-td auto-width />
-          <q-td auto-width />
+          <q-td auto-width>
+            <q-btn
+              v-if="
+                (user &&
+                  user.uid == props.row.orderUserId &&
+                  props.row.isTraded == false) ||
+                admin
+              "
+              size="md"
+              color="negative"
+              round
+              dense
+              @click="cancel(props.row)"
+              icon="cancel"
+          /></q-td>
+          <q-td auto-width
+            ><q-btn
+              v-if="props.row.isTraded == true"
+              size="md"
+              disabled
+              color="primary"
+              round
+              dense
+              icon="shopping_bag"
+          /></q-td>
         </q-tr>
         <q-tr v-show="props.expand" :props="props">
           <q-td colspan="100%">
             <div class="text-left">
-              This is expand slot for row above: {{ props.row.name }}.
+              {{ props.row.price }} $ karsilignda {{ props.row.quantity }} adet
+              Tether icin odeyeceginiz tutar
+              {{ props.row.price + props.row.commission }}.
             </div>
           </q-td>
+          <q-td auto-width
+            ><q-btn
+              v-if="
+                ((user && user.uid != props.row.orderUserId) || !user) &&
+                props.row.isTraded == false
+              "
+              :disabled="!userApproved"
+              size="md"
+              color="accent"
+              round
+              dense
+              @click="trade(props.row)"
+              icon="shopping_bag"
+          /></q-td>
         </q-tr>
       </template>
     </q-table>
@@ -48,180 +139,146 @@
 <script>
 import { ref, defineComponent } from "vue";
 import NewTrade from "./NewTrade.vue";
+import {
+  useLoadBuyingOrders,
+  updateBuyingOrder,
+  updateSellingOrder,
+} from "src/service/OrderData";
 
 const columns = [
   {
-    name: "calories",
-    align: "center",
+    name: "price",
     label: "Dolar Miktari",
-    field: "calories",
+    field: "price",
     sortable: true,
   },
-  { name: "fat", label: "Tether Miktari", field: "fat", sortable: true },
-  { name: "protein", label: "Komisyon", field: "protein" },
   {
-    name: "calcium",
+    name: "quantity",
+    label: "Tether Miktari",
+    field: "quantity",
+    sortable: true,
+  },
+  { name: "commission", label: "Komisyon", field: "commission" },
+  {
+    name: "rate",
     label: "Oran (%)",
-    field: "calcium",
-    sortable: true,
-    sort: (a, b) => parseInt(a, 10) - parseInt(b, 10),
+    field: "rate",
   },
 ];
 
-const originalRows = [
-  {
-    name: "Frozen Yogurt",
-    calories: 159,
-    fat: 6.0,
-    carbs: 24,
-    protein: 4.0,
-    sodium: 87,
-    calcium: "14%",
-    iron: "1%",
-  },
-  {
-    name: "Ice cream sandwich",
-    calories: 237,
-    fat: 9.0,
-    carbs: 37,
-    protein: 4.3,
-    sodium: 129,
-    calcium: "8%",
-    iron: "1%",
-  },
-  {
-    name: "Eclair",
-    calories: 262,
-    fat: 16.0,
-    carbs: 23,
-    protein: 6.0,
-    sodium: 337,
-    calcium: "6%",
-    iron: "7%",
-  },
-  {
-    name: "Cupcake",
-    calories: 305,
-    fat: 3.7,
-    carbs: 67,
-    protein: 4.3,
-    sodium: 413,
-    calcium: "3%",
-    iron: "8%",
-  },
-  {
-    name: "Gingerbread",
-    calories: 356,
-    fat: 16.0,
-    carbs: 49,
-    protein: 3.9,
-    sodium: 327,
-    calcium: "7%",
-    iron: "16%",
-  },
-  {
-    name: "Jelly bean",
-    calories: 375,
-    fat: 0.0,
-    carbs: 94,
-    protein: 0.0,
-    sodium: 50,
-    calcium: "0%",
-    iron: "0%",
-  },
-  {
-    name: "Lollipop",
-    calories: 392,
-    fat: 0.2,
-    carbs: 98,
-    protein: 0,
-    sodium: 38,
-    calcium: "0%",
-    iron: "2%",
-  },
-  {
-    name: "Honeycomb",
-    calories: 408,
-    fat: 3.2,
-    carbs: 87,
-    protein: 6.5,
-    sodium: 562,
-    calcium: "0%",
-    iron: "45%",
-  },
-  {
-    name: "Donut",
-    calories: 452,
-    fat: 25.0,
-    carbs: 51,
-    protein: 4.9,
-    sodium: 326,
-    calcium: "2%",
-    iron: "22%",
-  },
-  {
-    name: "KitKat",
-    calories: 518,
-    fat: 26.0,
-    carbs: 65,
-    protein: 7,
-    sodium: 54,
-    calcium: "12%",
-    iron: "6%",
-  },
-];
+const orders = [];
 
-const loading = ref(false);
-const filter = ref("");
-const rowCount = ref(10);
-const rows = ref([...originalRows]);
-
-export default defineComponent({
-  components: { NewTrade },
-  name: "TradeGrid",
+export default {
   data() {
     return {
       columns,
-      rows,
-
-      loading,
-      filter,
-      rowCount,
-
-      // emulate fetching data from server
-      addRow() {
-        loading.value = true;
-        setTimeout(() => {
-          const index = Math.floor(Math.random() * (rows.value.length + 1)),
-            row = originalRows[Math.floor(Math.random() * originalRows.length)];
-
-          if (rows.value.length === 0) {
-            rowCount.value = 0;
-          }
-
-          row.id = ++rowCount.value;
-          const newRow = { ...row }; // extend({}, row, { name: `${row.name} (${row.__count})` })
-          rows.value = [
-            ...rows.value.slice(0, index),
-            newRow,
-            ...rows.value.slice(index),
-          ];
-          loading.value = false;
-        }, 500);
-      },
-
-      removeRow() {
-        loading.value = true;
-        setTimeout(() => {
-          const index = Math.floor(Math.random() * rows.value.length);
-          rows.value = [
-            ...rows.value.slice(0, index),
-            ...rows.value.slice(index + 1),
-          ];
-          loading.value = false;
-        }, 500);
-      },
+      orders,
+      order: {},
+      confirm: false,
+      cancelDialog: false,
     };
   },
-});
+  mounted() {
+    this.orders = useLoadBuyingOrders();
+  },
+  computed: {
+    user() {
+      return this.$store.state.user;
+    },
+    admin() {
+      return this.$store.state.profileAdmin;
+    },
+    userApproved() {
+      return this.$store.state.profileApproved;
+    },
+    commission() {
+      return Math.round(
+        parseFloat(
+          this.order.quantity == null
+            ? 0
+            : this.order.quantity <= 40000
+            ? 10
+            : this.order.quantity * 0.00025
+        )
+      );
+    },
+    rate() {
+      return parseFloat(
+        this.order.quantity == null || this.order.price == null
+          ? 0
+          : (this.order.price - this.order.quantity) /
+              (this.order.quantity == 0 ? 1 : this.order.quantity)
+      ).toFixed(5);
+    },
+  },
+  components: { NewTrade },
+  methods: {
+    trade(order) {
+      this.order = order;
+      this.confirm = true;
+    },
+    async confirmTrade() {
+      if (this.order.orderUserId) {
+        this.order.isTraded = true;
+        this.order.tradeUserId = this.user.uid;
+        this.order.tradeUser = this.user.email;
+        this.order.tradeDate = new Date().toLocaleString();
+        this.order.tradeCommission = this.order.commission;
+        this.order.tradePayment =
+          this.tradeType == "Alis"
+            ? this.order.price - this.order.tradeCommission
+            : this.order.price + this.order.tradeCommission;
+
+        if (this.tradeType == "Alis") {
+          await updateBuyingOrder(this.order.id, {
+            ...this.order,
+          });
+        } else {
+          await updateSellingOrder(this.order.id, {
+            ...this.order,
+          });
+        }
+
+        this.$q.notify({
+          color: "info",
+          textColor: "white",
+          icon: "warning",
+          message: "Onay sonrasi listelenecektir",
+        });
+      }
+
+      this.order = {};
+      this.confirm = false;
+    },
+    cancel(order) {
+      this.order = order;
+      this.cancelDialog = true;
+    },
+    async cancelTrade() {
+      if (this.order.orderUserId) {
+        this.order.isCancelled = true;
+
+        if (this.tradeType == "Alis") {
+          await updateBuyingOrder(this.order.id, {
+            ...this.order,
+          });
+        } else {
+          await updateSellingOrder(this.order.id, {
+            ...this.order,
+          });
+        }
+
+        this.$q.notify({
+          color: "info",
+          textColor: "white",
+          icon: "warning",
+          message: "Emriniz iptal edildi",
+        });
+      }
+
+      this.order = {};
+      this.cancelDialog = false;
+    },
+  },
+};
 </script>

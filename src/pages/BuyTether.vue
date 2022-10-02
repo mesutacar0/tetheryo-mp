@@ -8,21 +8,15 @@ import TradeGrid from "src/components/TradeGrid.vue";
 
 export default defineComponent({
   components: { TradeGrid },
-  name: "EssentialLink",
+  name: "BuyTether",
   props: {
     title: {
       type: String,
-      required: true,
     },
 
     caption: {
       type: String,
       default: "",
-    },
-
-    link: {
-      type: String,
-      default: "#",
     },
 
     icon: {
