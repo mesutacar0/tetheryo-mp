@@ -4,12 +4,17 @@
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="toggleDrawer" />
 
-        <q-toolbar-title>
+        <q-toolbar-title align="center">
           <span></span>
-          <q-icon color="black" name="fa-solid fa-handshake" size="md" />
+          <q-icon
+            color="white"
+            name="fa-solid fa-handshake"
+            size="md"
+            class="q-mr-sm"
+          />
           TetherYo!
         </q-toolbar-title>
-        <q-btn dense flat round icon="logout" @click="signOut" />
+        <q-btn v-if="user" dense flat round icon="logout" @click="signOut" />
       </q-toolbar>
     </q-header>
     <q-drawer
@@ -26,7 +31,7 @@
     >
       <q-scroll-area class="fit">
         <q-list padding>
-          <q-item clickable v-ripple>
+          <q-item clickable v-ripple to="sell">
             <q-item-section avatar>
               <q-icon name="shopping_cart_checkout" />
             </q-item-section>
@@ -55,51 +60,56 @@
       </q-scroll-area>
     </q-drawer>
 
-    <q-page-container>
+    <q-page-container align="center">
       <router-view />
     </q-page-container>
 
     <q-footer elevated class="bg-grey-8 text-white">
       <q-toolbar>
-        <q-toolbar-title>
+        <q-toolbar-title align="center">
           <q-icon name="fas fa-handshake" size="md" />
           TetherYo!
         </q-toolbar-title>
         <q-btn
           round
-          dense
           outline
           icon="phone"
-          class="q-mr-xs"
-          color="secondary"
+          color="white"
           href="https://api.whatsapp.com/send?phone=905077530489&text=Merhaba%20TetherYo!"
           target="_blank"
-        />
+          ><q-tooltip class="bg-accent">TetherYo! Whatsapp</q-tooltip></q-btn
+        >
       </q-toolbar>
     </q-footer>
   </q-layout>
 </template>
 
 <script>
-import { ref } from "vue";
+import { defineComponent } from "vue";
 import { auth } from "src/boot/firebase";
 
-export default {
-  setup() {
-    const drawer = ref(false);
-    const miniState = ref(true);
-
+export default defineComponent({
+  name: "MainLayout",
+  components: {},
+  data() {
     return {
-      miniState,
-      drawer,
-      toggleDrawer() {
-        drawer.value = !drawer.value;
-      },
-      signOut() {
-        auth.signOut();
-        window.location.reload();
-      },
+      miniState: false,
+      drawer: false,
     };
   },
-};
+  computed: {
+    user() {
+      return this.$store.state.user;
+    },
+  },
+  methods: {
+    toggleDrawer() {
+      this.drawer = !this.drawer;
+    },
+    signOut() {
+      auth.signOut();
+      window.location.reload();
+    },
+  },
+});
 </script>

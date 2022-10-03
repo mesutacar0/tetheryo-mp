@@ -1,5 +1,96 @@
 <template>
   <div class="q-pa-md">
+    <NewTrade :tradeType="tradeType" />
+    <q-table
+      :rows="orders"
+      :columns="columns"
+      row-key="id"
+      :rows-per-page-options="[25, 50]"
+    >
+      <template v-slot:header="props">
+        <q-tr :props="props">
+          <q-th v-for="col in props.cols" :key="col.name" :props="props">
+            {{ col.label }}
+          </q-th>
+          <q-th auto-width />
+          <q-th auto-width />
+          <q-th auto-width />
+        </q-tr>
+      </template>
+
+      <template v-slot:body="props">
+        <q-tr :props="props">
+          <q-td v-for="col in props.cols" :key="col.name" :props="props">
+            {{ col.value }}
+          </q-td>
+          <q-td auto-width>
+            <q-btn
+              size="md"
+              color="accent"
+              round
+              dense
+              outline
+              @click="props.expand = !props.expand"
+              :icon="props.expand ? 'remove' : 'add'"
+              ><q-tooltip class="bg-accent">Detay Gor!</q-tooltip></q-btn
+            >
+          </q-td>
+          <q-td auto-width>
+            <q-btn
+              v-if="
+                (user &&
+                  user.uid == props.row.orderUserId &&
+                  props.row.isTraded == false) ||
+                admin
+              "
+              size="md"
+              color="negative"
+              round
+              outline
+              dense
+              @click="cancel(props.row)"
+              icon="cancel"
+              ><q-tooltip class="bg-accent">Emri Iptal Et!</q-tooltip></q-btn
+            ></q-td
+          >
+          <q-td auto-width
+            ><q-btn
+              v-if="props.row.isTraded == true"
+              size="md"
+              color="info"
+              round
+              outline
+              dense
+              icon="shopping_bag"
+              ><q-tooltip class="bg-accent">Rezerve Edilmis!</q-tooltip></q-btn
+            ></q-td
+          >
+        </q-tr>
+        <q-tr v-show="props.expand" :props="props">
+          <q-td colspan="100%">
+            <div class="text-left">
+              {{ props.row.price }} $ karsilignda {{ props.row.quantity }} adet
+              Tether icin odeyeceginiz tutar
+              {{ props.row.price + props.row.commission }}.
+            </div>
+          </q-td>
+          <q-td auto-width
+            ><q-btn
+              v-if="
+                ((user && user.uid != props.row.orderUserId) || !user) &&
+                props.row.isTraded == false
+              "
+              :disabled="!userApproved"
+              size="md"
+              color="accent"
+              round
+              dense
+              @click="trade(props.row)"
+              icon="shopping_bag"
+          /></q-td>
+        </q-tr>
+      </template>
+    </q-table>
     <q-dialog v-model="confirm" persistent>
       <q-card>
         <q-card-section class="row items-center">
@@ -47,92 +138,6 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <q-table
-      :rows="orders"
-      :columns="columns"
-      row-key="id"
-      pagination.rowsPerPage="20"
-    >
-      <template v-slot:top>
-        <NewTrade />
-      </template>
-      <template v-slot:header="props">
-        <q-tr :props="props">
-          <q-th v-for="col in props.cols" :key="col.name" :props="props">
-            {{ col.label }}
-          </q-th>
-          <q-th auto-width />
-          <q-th auto-width />
-          <q-th auto-width />
-        </q-tr>
-      </template>
-
-      <template v-slot:body="props">
-        <q-tr :props="props">
-          <q-td v-for="col in props.cols" :key="col.name" :props="props">
-            {{ col.value }}
-          </q-td>
-          <q-td auto-width>
-            <q-btn
-              size="md"
-              color="accent"
-              round
-              dense
-              @click="props.expand = !props.expand"
-              :icon="props.expand ? 'remove' : 'add'"
-            />
-          </q-td>
-          <q-td auto-width>
-            <q-btn
-              v-if="
-                (user &&
-                  user.uid == props.row.orderUserId &&
-                  props.row.isTraded == false) ||
-                admin
-              "
-              size="md"
-              color="negative"
-              round
-              dense
-              @click="cancel(props.row)"
-              icon="cancel"
-          /></q-td>
-          <q-td auto-width
-            ><q-btn
-              v-if="props.row.isTraded == true"
-              size="md"
-              disabled
-              color="primary"
-              round
-              dense
-              icon="shopping_bag"
-          /></q-td>
-        </q-tr>
-        <q-tr v-show="props.expand" :props="props">
-          <q-td colspan="100%">
-            <div class="text-left">
-              {{ props.row.price }} $ karsilignda {{ props.row.quantity }} adet
-              Tether icin odeyeceginiz tutar
-              {{ props.row.price + props.row.commission }}.
-            </div>
-          </q-td>
-          <q-td auto-width
-            ><q-btn
-              v-if="
-                ((user && user.uid != props.row.orderUserId) || !user) &&
-                props.row.isTraded == false
-              "
-              :disabled="!userApproved"
-              size="md"
-              color="accent"
-              round
-              dense
-              @click="trade(props.row)"
-              icon="shopping_bag"
-          /></q-td>
-        </q-tr>
-      </template>
-    </q-table>
   </div>
 </template>
 
@@ -141,6 +146,7 @@ import { ref, defineComponent } from "vue";
 import NewTrade from "./NewTrade.vue";
 import {
   useLoadBuyingOrders,
+  useLoadSellingOrders,
   updateBuyingOrder,
   updateSellingOrder,
 } from "src/service/OrderData";
@@ -169,6 +175,12 @@ const columns = [
 const orders = [];
 
 export default {
+  props: {
+    tradeType: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       columns,
@@ -179,7 +191,8 @@ export default {
     };
   },
   mounted() {
-    this.orders = useLoadBuyingOrders();
+    this.orders =
+      this.tradeType == "Buy" ? useLoadBuyingOrders() : useLoadSellingOrders();
   },
   computed: {
     user() {
@@ -225,11 +238,11 @@ export default {
         this.order.tradeDate = new Date().toLocaleString();
         this.order.tradeCommission = this.order.commission;
         this.order.tradePayment =
-          this.tradeType == "Alis"
+          this.tradeType == "Buy"
             ? this.order.price - this.order.tradeCommission
             : this.order.price + this.order.tradeCommission;
 
-        if (this.tradeType == "Alis") {
+        if (this.tradeType == "Buy") {
           await updateBuyingOrder(this.order.id, {
             ...this.order,
           });
@@ -258,7 +271,7 @@ export default {
       if (this.order.orderUserId) {
         this.order.isCancelled = true;
 
-        if (this.tradeType == "Alis") {
+        if (this.tradeType == "Buy") {
           await updateBuyingOrder(this.order.id, {
             ...this.order,
           });

@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md" style="max-width: 400px">
-    <q-card class="my-card" align="center">
+    <q-card>
       <q-card-section class="bg-primary text-white">
         <div class="text-h6">TetherYo!'ya Giris Yap!</div>
       </q-card-section>

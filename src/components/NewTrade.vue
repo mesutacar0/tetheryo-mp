@@ -1,15 +1,48 @@
 <template>
   <div class="q-pa-md">
+    <q-toolbar class="bg-primary text-white rounded-borders">
+      <q-toolbar-title class="gt-xs">Yeni Emir Girisi</q-toolbar-title>
+      <q-input
+        dark
+        dense
+        standout
+        v-model="order.price"
+        label="Dolar Miktari"
+        type="number"
+        input-class="text-right"
+        class="q-mr-md"
+      >
+      </q-input>
+      <q-input
+        dark
+        dense
+        standout
+        v-model="order.quantity"
+        label="Tether Miktari"
+        type="number"
+        input-class="text-right"
+        class="q-mr-md"
+      >
+      </q-input>
+      <q-btn
+        :disabled="!user"
+        round
+        dense
+        standout
+        outline
+        icon="add"
+        @click="confirm = true"
+        ><q-tooltip class="bg-accent">Emir Gir!</q-tooltip></q-btn
+      >
+    </q-toolbar>
     <q-dialog v-model="confirm" persistent>
       <q-card>
         <q-card-section class="row items-center">
           <q-avatar icon="help" color="primary" text-color="white" />
-          <span class="q-ml-sm"
-            >Tether: {{ order.quantity }} <br />
-            Dolar: {{ order.price }} <br />
-            Komisyon: {{ commission }}<br />
+          <span class="q-ml-sm">
             Oran: {{ rate }}<br />
-            Toplam Odeyeceginiz:
+            Komisyon: {{ commission }}<br />
+            Toplam Odeyeceginiz Tutar:
             {{ order.price + commission }} <br /><br />
             Islemi onayliyor musunuz?</span
           >
@@ -21,43 +54,6 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <q-toolbar class="bg-primary text-white rounded-borders">
-      <q-avatar class="gt-xs">
-        <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" />
-      </q-avatar>
-      <q-toolbar-title>Yeni Emir Girisi</q-toolbar-title>
-      <q-input
-        dark
-        dense
-        standout
-        v-model="order.price"
-        label="Dolar Miktari"
-        type="number"
-        input-class="text-right"
-        class="q-ml-md"
-      >
-      </q-input>
-      <q-input
-        dark
-        dense
-        standout
-        v-model="order.quantity"
-        label="Tether Miktari"
-        type="number"
-        input-class="text-right"
-        class="q-ml-md"
-      >
-      </q-input>
-      <q-btn
-        :disabled="!user"
-        round
-        dense
-        standout
-        icon="add"
-        class="q-ml-xs"
-        @click="confirm = true"
-      />
-    </q-toolbar>
   </div>
 </template>
 
@@ -82,7 +78,7 @@ export default defineComponent({
 
     tradeType: {
       type: String,
-      default: "Alis",
+      required: true,
     },
 
     icon: {
@@ -142,11 +138,11 @@ export default defineComponent({
       this.order.commission = this.commission;
       this.order.rate = this.rate;
       this.order.orderPayment =
-        this.tradeType == "Alis"
+        this.tradeType == "Buy"
           ? this.order.price + this.order.commission
           : this.order.price - this.order.commission;
 
-      if (this.tradeType == "Alis") {
+      if (this.tradeType == "Buy") {
         await createBuyingOrder({ ...this.order });
       } else {
         await createSellingOrder({ ...this.order });

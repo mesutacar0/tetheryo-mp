@@ -1,6 +1,6 @@
 import { db } from "src/boot/firebase";
 const buyingOrders = db.collection("/buyingOrdersTest");
-const sellingOrders = db.collection("/buyingOrdersTest");
+const sellingOrders = db.collection("/sellingOrdersTest");
 
 const activeBuyingOrders = buyingOrders
   .where("isApproved", "==", true)

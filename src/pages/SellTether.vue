@@ -1,5 +1,5 @@
 <template>
-  <TradeGrid tradeType="Buy"></TradeGrid>
+  <TradeGrid tradeType="Sell"></TradeGrid>
 </template>
 
 <script>
@@ -8,6 +8,6 @@ import TradeGrid from "src/components/TradeGrid.vue";
 
 export default defineComponent({
   components: { TradeGrid },
-  name: "BuyTether",
+  name: "SellTether",
 });
 </script>

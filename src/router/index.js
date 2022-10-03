@@ -40,17 +40,13 @@ export default route(function (/* { store, ssrContext } */) {
   });
 
   Router.beforeEach(async (to, from, next) => {
-    console.log("from", from);
-    console.log("to", to);
     let user = auth.currentUser;
-    console.log("user", user);
     let admin = null;
     if (user) {
       let token = await user.getIdTokenResult();
       admin = token.claims.admin;
     }
     if (to.matched.some((res) => res.meta.requiresAuth)) {
-      console.log("requires Auth");
       if (user) {
         if (to.matched.some((res) => res.meta.requiresAdmin)) {
           if (admin) {
@@ -63,9 +59,7 @@ export default route(function (/* { store, ssrContext } */) {
       return next({ name: "Buy" });
     }
     if (to.matched.some((res) => res.meta.disableIfLoggedIn)) {
-      console.log("disable If loggedin");
       if (user) {
-        console.log("disabled and user");
         return next({ name: "Buy" });
       }
       return next();

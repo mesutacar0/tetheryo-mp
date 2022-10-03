@@ -4,6 +4,16 @@ const routes = [
     component: () => import("layouts/MainLayout.vue"),
     children: [
       {
+        path: "/sell",
+        name: "Sell",
+        component: () => import("pages/SellTether.vue"),
+        meta: {
+          title: "Satis Yap!",
+          requiresAuth: false,
+          disableIfLoggedIn: false,
+        },
+      },
+      {
         path: "/buy",
         name: "Buy",
         component: () => import("pages/BuyTether.vue"),
