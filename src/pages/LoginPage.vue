@@ -80,20 +80,29 @@ export default {
     };
   },
   methods: {
-    signIn() {
-      auth
-        .signInWithEmailAndPassword(this.User.email, this.User.password)
-        .then(() => {
-          this.$router.push({ name: "Buy" });
-        })
-        .catch((err) => {
-          this.$q.notify({
-            color: "red-5",
-            textColor: "white",
-            icon: "warning",
-            message: err.message,
+    async signIn() {
+      if (this.User.email !== "" && this.User.password !== "") {
+        await auth
+          .signInWithEmailAndPassword(this.User.email, this.User.password)
+          .then(() => {
+            this.$router.push({ name: "Buy" });
+          })
+          .catch((err) => {
+            this.$q.notify({
+              color: "red-5",
+              textColor: "white",
+              icon: "warning",
+              message: err.message,
+            });
           });
-        });
+      }
+
+      this.$q.notify({
+        color: "red-5",
+        textColor: "white",
+        icon: "warning",
+        message: "Giris Yapmak icin Email ve Sifrenizi girin!",
+      });
     },
     toRegister() {
       this.$router.push({ name: "Register" });

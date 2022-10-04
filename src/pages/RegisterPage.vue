@@ -135,7 +135,7 @@ export default {
         auth
           .createUserWithEmailAndPassword(this.email, this.password)
           .then((result) => {
-            const dataBase = db.collection("users").doc(result.user.uid);
+            const dataBase = db.collection("usersTest").doc(result.user.uid);
             dataBase.set({
               firstName: this.firstName,
               lastName: this.lastName,

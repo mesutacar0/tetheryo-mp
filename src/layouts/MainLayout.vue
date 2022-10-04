@@ -14,7 +14,9 @@
           />
           TetherYo!
         </q-toolbar-title>
-        <q-btn v-if="user" dense flat round icon="logout" @click="signOut" />
+        <q-btn v-if="user" dense flat round icon="logout" @click="signOut"
+          ><q-tooltip class="bg-accent">Cikis Yap!</q-tooltip></q-btn
+        >
       </q-toolbar>
     </q-header>
     <q-drawer
@@ -33,7 +35,7 @@
         <q-list padding>
           <q-item clickable v-ripple to="sell">
             <q-item-section avatar>
-              <q-icon name="shopping_cart_checkout" />
+              <q-icon name="shopping_cart_checkout " />
             </q-item-section>
 
             <q-item-section> Tether Sat </q-item-section>
@@ -56,12 +58,24 @@
 
             <q-item-section> Hesabim </q-item-section>
           </q-item>
+
+          <q-item clickable v-ripple to="admin">
+            <q-item-section avatar>
+              <q-icon name="manage_accounts" />
+            </q-item-section>
+
+            <q-item-section> Admin </q-item-section>
+          </q-item>
         </q-list>
       </q-scroll-area>
     </q-drawer>
 
     <q-page-container align="center">
-      <router-view />
+      <router-view v-slot="{ Component }">
+        <keep-alive>
+          <component :is="Component" />
+        </keep-alive>
+      </router-view>
     </q-page-container>
 
     <q-footer elevated class="bg-grey-8 text-white">

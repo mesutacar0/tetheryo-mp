@@ -1,44 +1,16 @@
 <template>
   <div class="q-pa-md">
-    <q-bar dense class="lt-xs bg-primary text-white text-right rounded-borders">
+    <q-bar dense class="lt-sm bg-primary text-white text-right rounded-borders">
       Yeni Emir Girisi
     </q-bar>
     <q-toolbar class="bg-primary text-white rounded-borders">
       <q-toolbar-title class="gt-xs">Yeni Emir Girisi</q-toolbar-title>
-      <q-input
-        dark
-        dense
-        standout
-        v-model="order.price"
-        label="Dolar Miktari"
-        type="number"
-        input-class="text-right"
-        class="q-mr-md"
-      >
-      </q-input>
-      <q-input
-        dark
-        dense
-        standout
-        v-model="order.quantity"
-        label="Tether Miktari"
-        type="number"
-        input-class="text-right"
-        class="q-mr-md"
-      >
-      </q-input>
-      <q-btn
-        :disabled="!user"
-        round
-        dense
-        standout
-        outline
-        icon="add"
-        @click="confirm = true"
-        ><q-tooltip class="bg-accent">Emir Gir!</q-tooltip></q-btn
-      >
-    </q-toolbar>
-    <q-dialog v-model="confirm" persistent>
+      <NumberInput v-model="order.price" label="Dolar Miktari" />
+      <NumberInput v-model="order.quantity" label="Tether Miktari" />
+      <RoundButton icon="add" @c-click="confirm = true"
+        >Emir Gir!</RoundButton
+      > </q-toolbar
+    ><q-dialog v-model="confirm" persistent>
       <q-card>
         <q-card-section class="row items-center">
           <q-avatar icon="help" color="primary" text-color="white" />
@@ -64,10 +36,12 @@
 import { defineComponent } from "vue";
 import { useQuasar } from "quasar";
 import { createBuyingOrder, createSellingOrder } from "src/service/OrderData";
+import NumberInput from "./NumberInput.vue";
+import RoundButton from "./RoundButton.vue";
 
 export default defineComponent({
   name: "NewTrade",
-  components: {},
+  components: { NumberInput, RoundButton },
   props: {
     title: {
       type: String,

@@ -8,34 +8,77 @@
       :rows-per-page-options="[25, 50]"
     >
       <template v-slot:header="props">
-        <q-tr :props="props">
+        <q-tr :props="props" class="bg-dark text-white">
           <q-th v-for="col in props.cols" :key="col.name" :props="props">
             {{ col.label }}
           </q-th>
-          <q-th auto-width />
-          <q-th auto-width />
           <q-th auto-width />
         </q-tr>
       </template>
 
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td v-for="col in props.cols" :key="col.name" :props="props">
+          <q-td
+            v-for="col in props.cols"
+            :key="col.name"
+            :props="props"
+            @click="props.expand = !props.expand"
+            group="somegroup"
+          >
             {{ col.value }}
           </q-td>
-          <q-td auto-width>
-            <q-btn
+
+          <q-td auto-width
+            ><q-btn
+              v-if="props.row.isTraded == true"
+              size="md"
+              color="info"
+              round
+              outline
+              dense
+              icon="shopping_bag"
+              ><q-tooltip class="bg-accent">Rezerve Edilmis!</q-tooltip></q-btn
+            ><q-btn
+              v-if="
+                (user &&
+                  user.uid == props.row.orderUserId &&
+                  props.row.isTraded == false) ||
+                admin
+              "
+              size="md"
+              color="negative"
+              round
+              outline
+              dense
+              @click="cancel(props.row)"
+              icon="close"
+              ><q-tooltip class="bg-accent">Emri Iptal Et!</q-tooltip></q-btn
+            ></q-td
+          >
+        </q-tr>
+        <q-tr v-show="props.expand" :props="props">
+          <q-td colspan="4">
+            <div class="text-left">
+              {{ props.row.price }} $ karsilignda {{ props.row.quantity }} adet
+              Tether icin odeyeceginiz tutar
+              {{ props.row.price + props.row.commission }}.
+            </div>
+          </q-td>
+
+          <q-td auto-width
+            ><q-btn
+              v-if="
+                ((user && user.uid != props.row.orderUserId) || !user) &&
+                props.row.isTraded == false
+              "
+              :disabled="!userApproved"
               size="md"
               color="accent"
               round
               dense
-              outline
-              @click="props.expand = !props.expand"
-              :icon="props.expand ? 'remove' : 'add'"
-              ><q-tooltip class="bg-accent">Detay Gor!</q-tooltip></q-btn
-            >
-          </q-td>
-          <q-td auto-width>
+              @click="trade(props.row)"
+              icon="shopping_bag"
+            />
             <q-btn
               v-if="
                 (user &&
@@ -53,41 +96,6 @@
               ><q-tooltip class="bg-accent">Emri Iptal Et!</q-tooltip></q-btn
             ></q-td
           >
-          <q-td auto-width
-            ><q-btn
-              v-if="props.row.isTraded == true"
-              size="md"
-              color="info"
-              round
-              outline
-              dense
-              icon="shopping_bag"
-              ><q-tooltip class="bg-accent">Rezerve Edilmis!</q-tooltip></q-btn
-            ></q-td
-          >
-        </q-tr>
-        <q-tr v-show="props.expand" :props="props">
-          <q-td colspan="4">
-            <div class="text-left">
-              {{ props.row.price }} $ karsilignda {{ props.row.quantity }} adet
-              Tether icin odeyeceginiz tutar
-              {{ props.row.price + props.row.commission }}.
-            </div>
-          </q-td>
-          <q-td auto-width
-            ><q-btn
-              v-if="
-                ((user && user.uid != props.row.orderUserId) || !user) &&
-                props.row.isTraded == false
-              "
-              :disabled="!userApproved"
-              size="md"
-              color="accent"
-              round
-              dense
-              @click="trade(props.row)"
-              icon="shopping_bag"
-          /></q-td>
         </q-tr>
       </template>
     </q-table>
@@ -145,8 +153,8 @@
 import { ref, defineComponent } from "vue";
 import NewTrade from "./NewTrade.vue";
 import {
-  useLoadBuyingOrders,
-  useLoadSellingOrders,
+  getActiveBuyingOrders,
+  getActiveSellingOrders,
   updateBuyingOrder,
   updateSellingOrder,
 } from "src/service/OrderData";
@@ -188,11 +196,15 @@ export default {
       order: {},
       confirm: false,
       cancelDialog: false,
+      expanded: false,
     };
   },
   mounted() {
+    console.log("Trade Grid mounted");
     this.orders =
-      this.tradeType == "Buy" ? useLoadBuyingOrders() : useLoadSellingOrders();
+      this.tradeType == "Buy"
+        ? getActiveBuyingOrders()
+        : getActiveSellingOrders();
   },
   computed: {
     user() {

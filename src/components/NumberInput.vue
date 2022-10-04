@@ -1,39 +1,30 @@
 <template>
   <q-input
-    v-model.number="model"
-    type="number"
+    dark
+    dense
+    standout
+    :modelValue="modelValue"
     :label="label"
-    :disable="disable"
-    maxlength="12"
-  >
-    <template v-slot:before>
-      <q-icon :name="icon" />
-    </template>
-  </q-input>
+    type="number"
+    input-class="text-right"
+    class="q-mr-md"
+  />
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "NumberInput",
   props: {
     label: {
       type: String,
+      required: true,
     },
-    icon: {
-      type: String,
-      default: "pin",
+    modelValue: {
+      type: Number,
+      required: true,
     },
-    disable: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  data() {
-    return {
-      model: ref(),
-    };
   },
 });
 </script>
