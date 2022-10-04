@@ -67,7 +67,7 @@
           >
         </q-tr>
         <q-tr v-show="props.expand" :props="props">
-          <q-td colspan="100%">
+          <q-td colspan="4">
             <div class="text-left">
               {{ props.row.price }} $ karsilignda {{ props.row.quantity }} adet
               Tether icin odeyeceginiz tutar

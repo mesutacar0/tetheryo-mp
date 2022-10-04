@@ -1,5 +1,8 @@
 <template>
   <div class="q-pa-md">
+    <q-bar dense class="lt-xs bg-primary text-white text-right rounded-borders">
+      Yeni Emir Girisi
+    </q-bar>
     <q-toolbar class="bg-primary text-white rounded-borders">
       <q-toolbar-title class="gt-xs">Yeni Emir Girisi</q-toolbar-title>
       <q-input
