@@ -11,13 +11,6 @@ const activeSellingOrders = sellingOrders
   .where("isTradeApproved", "==", false)
   .where("isCancelled", "==", false);
 
-const pendingBuyingOrders = buyingOrders
-  .where("isApproved", "==", false)
-  .where("isCancelled", "==", false);
-const pendingSellingOrders = sellingOrders
-  .where("isApproved", "==", false)
-  .where("isCancelled", "==", false);
-
 import { ref, onUnmounted } from "vue";
 
 export const createBuyingOrder = (order) => {
@@ -31,10 +24,6 @@ export const getBuyingOrder = async (id) => {
 
 export const updateBuyingOrder = (id, order) => {
   return buyingOrders.doc(id).update(order);
-};
-
-export const deleteBuyingOrder = (id) => {
-  return buyingOrders.doc(id).delete();
 };
 
 export const getActiveBuyingOrders = () => {
@@ -59,8 +48,40 @@ export const updateSellingOrder = (id, order) => {
   return sellingOrders.doc(id).update(order);
 };
 
+export const deleteBuyingOrder = (id) => {
+  return buyingOrders.doc(id).update({
+    isCancelled: true,
+  });
+};
+
 export const deleteSellingOrder = (id) => {
-  return sellingOrders.doc(id).delete();
+  return sellingOrders.doc(id).update({
+    isCancelled: true,
+  });
+};
+
+export const approveBuyingOrder = (id) => {
+  return buyingOrders.doc(id).update({
+    isApproved: true,
+  });
+};
+
+export const approveSellingOrder = (id) => {
+  return sellingOrders.doc(id).update({
+    isApproved: true,
+  });
+};
+
+export const approveBuyingOrderTrade = (id) => {
+  return buyingOrders.doc(id).update({
+    isTradeApproved: true,
+  });
+};
+
+export const approveSellingOrderTrade = (id) => {
+  return sellingOrders.doc(id).update({
+    isTradeApproved: true,
+  });
 };
 
 export const getActiveSellingOrders = () => {
@@ -72,20 +93,66 @@ export const getActiveSellingOrders = () => {
   return orders;
 };
 
-export const getPendingBuyingOrders = () => {
+export const getAllBuyingOrders = () => {
   const orders = ref([]);
-  const close = pendingBuyingOrders.onSnapshot((snapshot) => {
+  const close = buyingOrders.onSnapshot((snapshot) => {
     orders.value = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   });
   onUnmounted(close);
   return orders;
 };
 
-export const getPendingSellingOrders = () => {
+export const getAllSellingOrders = () => {
   const orders = ref([]);
-  const close = pendingSellingOrders.onSnapshot((snapshot) => {
+  const close = sellingOrders.onSnapshot((snapshot) => {
     orders.value = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   });
   onUnmounted(close);
+  return orders;
+};
+
+export const getUserBuyingOrders = (userId) => {
+  const orders = ref([]);
+  const close = buyingOrders
+    .where("orderUserId", "==", userId)
+    .onSnapshot((snapshot) => {
+      orders.value = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+    });
+  const close1 = sellingOrders
+    .where("tradeUserId", "==", userId)
+    .onSnapshot((snapshot) => {
+      orders.value = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+    });
+  onUnmounted(close);
+  onUnmounted(close1);
+  return orders;
+};
+
+export const getUserSellingOrders = (userId) => {
+  const orders = ref([]);
+  const close = sellingOrders
+    .where("orderUserId", "==", userId)
+    .onSnapshot((snapshot) => {
+      orders.value = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+    });
+  const close1 = buyingOrders
+    .where("tradeUserId", "==", userId)
+    .onSnapshot((snapshot) => {
+      orders.value = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+    });
+  onUnmounted(close);
+  onUnmounted(close1);
   return orders;
 };

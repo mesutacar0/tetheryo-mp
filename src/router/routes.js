@@ -29,7 +29,28 @@ const routes = [
         component: () => import("pages/AdminPage.vue"),
         meta: {
           title: "Admin!",
-          requiresAuth: false,
+          requiresAuth: true,
+          requiresAdmin: true,
+          disableIfLoggedIn: false,
+        },
+      },
+      {
+        path: "/profile",
+        name: "Profile",
+        component: () => import("pages/ProfilePage.vue"),
+        meta: {
+          title: "Profile!",
+          requiresAuth: true,
+          disableIfLoggedIn: false,
+        },
+      },
+      {
+        path: "/history",
+        name: "History",
+        component: () => import("pages/HistoryPage.vue"),
+        meta: {
+          title: "Gecmis!",
+          requiresAuth: true,
           disableIfLoggedIn: false,
         },
       },

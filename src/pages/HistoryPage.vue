@@ -5,10 +5,8 @@
       v-model="orderType"
       toggle-color="primary"
       :options="[
-        { label: 'Onay Bekleyenler', value: 'one' },
-        { label: 'Satis Onayi Bekleyenler', value: 'two' },
-        { label: 'Tamamlananlar', value: 'three' },
-        { label: 'Tum Islemler', value: 'four' },
+        { label: 'Aldiklarim', value: 'one' },
+        { label: 'Sattiklarim', value: 'two' },
       ]"
     />
     <q-table
@@ -34,28 +32,6 @@
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
             {{ col.value }}
           </q-td>
-          <q-td auto-width
-            ><RoundButton
-              v-if="
-                (!props.row.isApproved ||
-                  (props.row.isTraded && !props.row.isTradeApproved)) &&
-                orderType != 'four'
-              "
-              icon="done"
-              color="green"
-              @c-click="approve(props.row)"
-              >Onayla!</RoundButton
-            ><RoundButton
-              v-if="
-                !(props.row.isApproved && props.row.isTradeApproved) &&
-                orderType != 'four'
-              "
-              icon="delete"
-              color="red"
-              @c-click="deleteOrder(props.row.id)"
-              >Sil!</RoundButton
-            ></q-td
-          >
         </q-tr>
       </template>
     </q-table>
@@ -75,7 +51,6 @@ import {
   approveBuyingOrderTrade,
   approveSellingOrderTrade,
 } from "src/service/OrderData";
-import RoundButton from "./RoundButton.vue";
 
 const columns = [
   {
@@ -94,38 +69,14 @@ const columns = [
   },
   { name: "rate", label: "Oran", field: "rate", align: "left" },
   { name: "commission", label: "Komisyon", field: "commission", align: "left" },
-  {
-    name: "commission",
-    label: "Komisyon2",
-    field: "commission",
-    align: "left",
-  },
   { name: "orderDate", label: "Tarih", field: "orderDate", align: "left" },
-  { name: "orderUser", label: "Kullanici", field: "orderUser", align: "left" },
-  {
-    name: "tradeDate",
-    label: "Teklif Tarih",
-    field: "tradeDate",
-    align: "left",
-  },
-  {
-    name: "tradeUser",
-    label: "Teklif Veren",
-    field: "tradeUser",
-    align: "left",
-  },
 ];
 
 const rows = [];
 
 export default defineComponent({
-  name: "OrderGrid",
-  props: {
-    tradeType: {
-      type: String,
-      required: true,
-    },
-  },
+  name: "HistoryPage",
+  props: {},
   data() {
     return {
       columns,
@@ -152,7 +103,7 @@ export default defineComponent({
       return this.$store.state.profileApproved;
     },
   },
-  components: { RoundButton },
+  components: {},
   methods: {
     approve(row) {
       !row.isApproved

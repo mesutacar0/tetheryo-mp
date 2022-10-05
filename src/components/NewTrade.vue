@@ -15,11 +15,11 @@
         <q-card-section class="row items-center">
           <q-avatar icon="help" color="primary" text-color="white" />
           <span class="q-ml-sm">
-            Oran: {{ rate }}<br />
-            Komisyon: {{ commission }}<br />
-            Toplam Odeyeceginiz Tutar:
-            {{ order.price + commission }} <br /><br />
-            Islemi onayliyor musunuz?</span
+            {{ order.price }}$ karsiligi olarak {{ order.quantity }} Tether
+            <br />
+            Oran: {{ rate }} Komisyon: {{ commission }}<br /><br />
+            {{ text(order.price, commission) }}<br /><br />
+            Yukaridaki bilgilerle emir girisinizi onayliyor musunuz?</span
           >
         </q-card-section>
 
@@ -43,16 +43,6 @@ export default defineComponent({
   name: "NewTrade",
   components: { NumberInput, RoundButton },
   props: {
-    title: {
-      type: String,
-      required: false,
-    },
-
-    caption: {
-      type: String,
-      default: "",
-    },
-
     tradeType: {
       type: String,
       required: true,
@@ -132,6 +122,15 @@ export default defineComponent({
       });
       this.order = {};
       this.confirm = false;
+    },
+    text(price, commission) {
+      return (
+        "Toplam: " +
+        (this.tradeType == "Buy"
+          ? Number(Number(price) + Number(commission)) + "$ odeyeceksiniz"
+          : Number(Number(price) - Number(commission)) + "$ alacaksiniz") +
+        ". "
+      );
     },
   },
 });

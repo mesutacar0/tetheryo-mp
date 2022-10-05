@@ -51,7 +51,15 @@
 
           <q-separator />
 
-          <q-item clickable v-ripple to="login">
+          <q-item v-if="!user" clickable v-ripple to="login">
+            <q-item-section avatar>
+              <q-icon name="login" />
+            </q-item-section>
+
+            <q-item-section> Giris/Kayit </q-item-section>
+          </q-item>
+
+          <q-item v-if="user" clickable v-ripple to="profile">
             <q-item-section avatar>
               <q-icon name="person" />
             </q-item-section>
@@ -59,7 +67,15 @@
             <q-item-section> Hesabim </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple to="admin">
+          <q-item v-if="user" clickable v-ripple to="history">
+            <q-item-section avatar>
+              <q-icon name="history" />
+            </q-item-section>
+
+            <q-item-section> Gecmis Islemler </q-item-section>
+          </q-item>
+
+          <q-item v-if="admin" clickable v-ripple to="admin">
             <q-item-section avatar>
               <q-icon name="manage_accounts" />
             </q-item-section>
@@ -114,6 +130,9 @@ export default defineComponent({
   computed: {
     user() {
       return this.$store.state.user;
+    },
+    admin() {
+      return this.$store.state.profileAdmin;
     },
   },
   methods: {

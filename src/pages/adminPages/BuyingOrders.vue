@@ -1,16 +1,6 @@
 <template>
   <div>
-    <q-btn-toggle
-      class="q-mb-xs"
-      v-model="isApproved"
-      toggle-color="primary"
-      :options="[
-        { label: 'Onay Bekleyenler', value: 'one' },
-        { label: 'Alis Onayi Bekleyenler', value: 'two' },
-        { label: 'Tamamlananlar', value: 'three' },
-      ]"
-    />
-    <OrderGrid></OrderGrid>
+    <OrderGrid tradeType="Buy"></OrderGrid>
   </div>
 </template>
 
@@ -25,6 +15,6 @@ export default defineComponent({
       tab: "users",
     };
   },
-  components: { OrderGrid, OrderGrid },
+  components: { OrderGrid },
 });
 </script>
