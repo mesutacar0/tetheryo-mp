@@ -4,6 +4,7 @@
     dense
     standout
     :modelValue="modelValue"
+    @update:modelValue="$emit('update:modelValue', $event)"
     :label="label"
     type="number"
     input-class="text-right"
@@ -26,5 +27,6 @@ export default defineComponent({
       required: true,
     },
   },
+  emits: ["update:modelValue", "userInput"],
 });
 </script>

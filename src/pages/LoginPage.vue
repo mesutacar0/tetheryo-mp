@@ -8,7 +8,7 @@
       <q-card-section>
         <q-form class="q-gutter-md">
           <q-input
-            v-model="User.email"
+            v-model="email"
             filled
             type="email"
             hint="Email adresinizi girin"
@@ -22,11 +22,12 @@
             </template>
           </q-input>
           <q-input
-            v-model="User.password"
+            v-model="password"
             filled
             :type="isPwd ? 'password' : 'text'"
             hint="Sifrenizi girin"
-            :rules="[(val) => (val && val.length > 0) || 'Sifrenizi girin']"
+            lazy-rules
+            :rules="[(val) => (val && val.length >= 0) || 'Sifrenizi girin']"
           >
             <template v-slot:append>
               <q-icon
@@ -67,7 +68,6 @@
 <script>
 import { useQuasar } from "quasar";
 import { ref } from "vue";
-import { User } from "src/model/user";
 import { auth } from "src/boot/firebase";
 
 export default {
@@ -75,34 +75,37 @@ export default {
   data() {
     const $q = useQuasar();
     return {
-      User: {},
+      email: "",
+      password: "",
       isPwd: ref(true),
     };
   },
   methods: {
     async signIn() {
-      if (this.User.email !== "" && this.User.password !== "") {
+      if (this.email !== "" && this.password !== "") {
         await auth
-          .signInWithEmailAndPassword(this.User.email, this.User.password)
+          .signInWithEmailAndPassword(this.email, this.password)
           .then(() => {
+            console.log("loggedIn");
             this.$router.push({ name: "Buy" });
           })
           .catch((err) => {
+            console.log("loggin error");
             this.$q.notify({
               color: "red-5",
               textColor: "white",
               icon: "warning",
-              message: err.message,
+              message: "Bilgilerinizi Kontrol Edip Tekrar Deneyin.",
             });
           });
+      } else {
+        this.$q.notify({
+          color: "red-5",
+          textColor: "white",
+          icon: "warning",
+          message: "Giris Yapmak icin Email ve Sifrenizi girin!",
+        });
       }
-
-      this.$q.notify({
-        color: "red-5",
-        textColor: "white",
-        icon: "warning",
-        message: "Giris Yapmak icin Email ve Sifrenizi girin!",
-      });
     },
     toRegister() {
       this.$router.push({ name: "Register" });

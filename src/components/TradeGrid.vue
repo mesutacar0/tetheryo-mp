@@ -24,7 +24,9 @@
             :props="props"
             @click="
               props.expand =
-                user.uid == props.row.orderUserId ? props.expand : !props.expand
+                user.uid == props.row.orderUserId || props.row.isTraded
+                  ? props.expand
+                  : !props.expand
             "
           >
             {{ col.value }}
@@ -45,7 +47,7 @@
               "
               color="negative"
               icon="close"
-              @c-close="cancel(props.row)"
+              @c-click="cancel(props.row)"
               >Iptal Et!</RoundButton
             ></q-td
           >
@@ -63,7 +65,7 @@
                 ((user && user.uid != props.row.orderUserId) || !user) &&
                 props.row.isTraded == false
               "
-              color="accent"
+              color="positive"
               :disabled="!userApproved"
               @c-click="trade(props.row)"
               icon="add"
@@ -183,7 +185,8 @@ export default {
   methods: {
     trade(order) {
       this.order = order;
-      this.confirm = true;
+      this.confirmTrade();
+      //this.confirm = true;
     },
     text(row) {
       return (
@@ -222,7 +225,8 @@ export default {
           color: "info",
           textColor: "white",
           icon: "warning",
-          message: "Onay sonrasi listelenecektir",
+          message:
+            "Emir girisiniz iletildi, kisa sure icinde bilgilendirileceksiniz",
         });
       }
 
@@ -231,8 +235,7 @@ export default {
     },
     cancel(order) {
       this.order = order;
-      this.cancelTrade();
-      //this.cancelDialog = true;
+      this.cancelDialog = true;
     },
     async cancelTrade() {
       if (this.order.orderUserId) {
