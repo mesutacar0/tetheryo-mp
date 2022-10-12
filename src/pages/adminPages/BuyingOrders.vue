@@ -11,9 +11,7 @@ import OrderGrid from "src/components/OrderGrid.vue";
 export default defineComponent({
   name: "BuyingOrders",
   data() {
-    return {
-      tab: "users",
-    };
+    return {};
   },
   components: { OrderGrid },
 });

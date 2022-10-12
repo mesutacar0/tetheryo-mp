@@ -124,10 +124,12 @@ export const getUserBuyingOrders = (userId) => {
   const close1 = sellingOrders
     .where("tradeUserId", "==", userId)
     .onSnapshot((snapshot) => {
-      orders.value = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      orders.value.concat(
+        snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+      );
     });
   onUnmounted(close);
   onUnmounted(close1);
@@ -147,10 +149,12 @@ export const getUserSellingOrders = (userId) => {
   const close1 = buyingOrders
     .where("tradeUserId", "==", userId)
     .onSnapshot((snapshot) => {
-      orders.value = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      orders.value.concat(
+        snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+      );
     });
   onUnmounted(close);
   onUnmounted(close1);

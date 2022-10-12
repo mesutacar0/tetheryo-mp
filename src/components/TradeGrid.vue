@@ -67,7 +67,7 @@
               "
               color="positive"
               :disabled="!userApproved"
-              @c-click="trade(props.row)"
+              @c-click="trade(props.row), (props.expand = !props.expand)"
               icon="add"
               >Al!</RoundButton
             ></q-td

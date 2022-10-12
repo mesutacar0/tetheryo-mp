@@ -9,9 +9,7 @@ import UserGrid from "src/components/UserGrid.vue";
 export default defineComponent({
   name: "UsersPage",
   data() {
-    return {
-      tab: "users",
-    };
+    return {};
   },
   components: { UserGrid },
   mounted() {

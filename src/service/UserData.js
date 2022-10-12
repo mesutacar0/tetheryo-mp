@@ -1,5 +1,5 @@
 import { db } from "src/boot/firebase";
-const allUsers = db.collection("/users");
+const allUsers = db.collection("/usersTest");
 
 const activeUsers = allUsers.where("isDeleted", "!=", true);
 const approvedUsers = allUsers

@@ -5,8 +5,8 @@
     </q-bar>
     <q-toolbar class="bg-primary text-white rounded-borders">
       <q-toolbar-title class="gt-xs">Yeni Emir Girisi</q-toolbar-title>
-      <NumberInput v-model="order.price" label="Dolar Miktari" />
       <NumberInput v-model="order.quantity" label="Tether Miktari" />
+      <NumberInput v-model="order.price" label="Dolar Miktari" />
       <RoundButton icon="add" @c-click="confirm = true" :disable="!userApproved"
         >Emir Gir!</RoundButton
       > </q-toolbar

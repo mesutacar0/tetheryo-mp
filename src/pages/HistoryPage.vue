@@ -42,14 +42,8 @@
 import { defineComponent, ref } from "vue";
 
 import {
-  getAllBuyingOrders,
-  getAllSellingOrders,
-  deleteBuyingOrder,
-  deleteSellingOrder,
-  approveBuyingOrder,
-  approveSellingOrder,
-  approveBuyingOrderTrade,
-  approveSellingOrderTrade,
+  getUserBuyingOrders,
+  getUserSellingOrders,
 } from "src/service/OrderData";
 
 const columns = [
@@ -90,7 +84,7 @@ export default defineComponent({
   },
   mounted() {
     this.rows =
-      this.tradeType == "Buy" ? getAllBuyingOrders() : getAllSellingOrders();
+      this.tradeType == "Buy" ? getUserBuyingOrders() : getUserSellingOrders();
   },
   computed: {
     user() {
@@ -105,18 +99,6 @@ export default defineComponent({
   },
   components: {},
   methods: {
-    approve(row) {
-      !row.isApproved
-        ? this.tradeType == "Buy"
-          ? approveBuyingOrder(row.id)
-          : approveSellingOrder(row.id)
-        : this.tradeType == "Buy"
-        ? approveBuyingOrderTrade(row.id)
-        : approveSellingOrderTrade(row.id);
-    },
-    deleteOrder(id) {
-      this.tradeType == "Buy" ? deleteBuyingOrder(id) : deleteSellingOrder(id);
-    },
     filterApproved(rows) {
       if (this.orderType == "one") return rows.filter((row) => !row.isApproved);
 

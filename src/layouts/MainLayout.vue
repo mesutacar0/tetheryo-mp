@@ -102,9 +102,8 @@
         </q-toolbar-title>
         <q-btn
           round
-          outline
-          icon="phone"
-          color="white"
+          flat
+          icon="fa-brands fa-whatsapp"
           href="https://api.whatsapp.com/send?phone=905077530489&text=Merhaba%20TetherYo!"
           target="_blank"
           ><q-tooltip class="bg-accent">TetherYo! Whatsapp</q-tooltip></q-btn

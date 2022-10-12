@@ -35,6 +35,17 @@ const routes = [
         },
       },
       {
+        path: "/adminer",
+        name: "Adminer",
+        component: () => import("pages/AdminerPage.vue"),
+        meta: {
+          title: "Adminer!",
+          requiresAuth: true,
+          requiresAdmin: true,
+          disableIfLoggedIn: false,
+        },
+      },
+      {
         path: "/profile",
         name: "Profile",
         component: () => import("pages/ProfilePage.vue"),

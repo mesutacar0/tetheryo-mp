@@ -2,6 +2,8 @@ import { store } from "quasar/wrappers";
 import { createStore } from "vuex";
 import { db, auth } from "src/boot/firebase";
 
+import { getUser } from "src/service/UserData";
+
 // import example from './module-example'
 
 /*
@@ -38,11 +40,11 @@ export default store(function (/* { ssrContext } */) {
       },
       setProfileInfo(state, doc) {
         state.profileId = doc.id;
-        state.profileEmail = doc.data().email;
-        state.profileFirstName = doc.data().firstName;
-        state.profileLastName = doc.data().lastName;
-        state.profileUsername = doc.data().username;
-        state.profileApproved = doc.data().isApproved;
+        state.profileEmail = doc.email;
+        state.profileFirstName = doc.firstName;
+        state.profileLastName = doc.lastName;
+        state.profileUsername = doc.username;
+        state.profileApproved = doc.isApproved;
       },
       setProfileInitials(state) {
         state.profileInitials =
@@ -61,8 +63,9 @@ export default store(function (/* { ssrContext } */) {
     },
     actions: {
       async getCurrentUser({ commit }, user) {
-        const dataBase = await db.collection("users").doc(auth.currentUser.uid);
-        const dbResults = await dataBase.get();
+        console.log("store getcurrentUser", user);
+        const dbResults = await getUser(auth.currentUser.uid);
+        console.log("store dbresult", dbResults);
         commit("setProfileInfo", dbResults);
         commit("setProfileInitials");
         const token = await user.getIdTokenResult();

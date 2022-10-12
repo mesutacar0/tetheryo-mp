@@ -9,8 +9,6 @@ import TradeGrid from "src/components/TradeGrid.vue";
 export default defineComponent({
   components: { TradeGrid },
   name: "BuyTether",
-  mounted() {
-    console.log("Buy Tether Mounted");
-  },
+  mounted() {},
 });
 </script>
