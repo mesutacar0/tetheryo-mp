@@ -23,7 +23,6 @@ export default defineComponent({
       required: true,
     },
     modelValue: {
-      type: Number,
       required: true,
     },
   },
