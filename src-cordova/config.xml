@@ -10,4 +10,7 @@
     <allow-intent href="https://*/*" />
     <allow-navigation href="about:*" />
     <preference name="android-minSdkVersion" value="30" />
+    <platform name="ios">
+        <preference name="ScrollEnabled" value="true" />
+    </platform>
 </widget>

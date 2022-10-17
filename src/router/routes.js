@@ -85,6 +85,16 @@ const routes = [
           disableIfLoggedIn: true,
         },
       },
+      {
+        path: "/privacy",
+        name: "Privacy",
+        component: () => import("pages/PrivacyPage.vue"),
+        meta: {
+          title: "Privacy!",
+          requiresAuth: false,
+          disableIfLoggedIn: false,
+        },
+      },
     ],
   },
 

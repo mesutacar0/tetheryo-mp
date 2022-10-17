@@ -82,6 +82,14 @@
 
             <q-item-section> Admin </q-item-section>
           </q-item>
+
+          <q-item clickable v-ripple to="privacy">
+            <q-item-section avatar>
+              <q-icon name="policy" />
+            </q-item-section>
+
+            <q-item-section> Gizlilik </q-item-section>
+          </q-item>
         </q-list>
       </q-scroll-area>
     </q-drawer>
