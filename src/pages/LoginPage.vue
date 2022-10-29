@@ -43,7 +43,7 @@
               label="Giris"
               type="submit"
               color="primary"
-              @click="signIn"
+              @click.prevent="signIn"
             />
             <q-btn
               label="Sifremi Unuttum"
@@ -86,11 +86,9 @@ export default {
         await auth
           .signInWithEmailAndPassword(this.email, this.password)
           .then(() => {
-            console.log("loggedIn");
             this.$router.push({ name: "Buy" });
           })
           .catch((err) => {
-            console.log("loggin error");
             this.$q.notify({
               color: "red-5",
               textColor: "white",
