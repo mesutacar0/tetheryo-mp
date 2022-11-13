@@ -14,6 +14,9 @@
           />
           TetherYo!
         </q-toolbar-title>
+        <q-toggle v-model="darkMode" color="black"
+          ><q-tooltip class="bg-accent">Dark Mode</q-tooltip></q-toggle
+        >
         <q-btn v-if="user" dense flat round icon="logout" @click="signOut"
           ><q-tooltip class="bg-accent">Cikis Yap!</q-tooltip></q-btn
         >
@@ -29,7 +32,7 @@
       :width="200"
       :breakpoint="500"
       bordered
-      class="bg-grey-3"
+      class="bg-grey-5"
     >
       <q-scroll-area class="fit">
         <q-list padding>
@@ -67,7 +70,7 @@
             <q-item-section> Hesabim </q-item-section>
           </q-item>
 
-          <q-item v-if="admin" clickable v-ripple to="history">
+          <q-item v-if="user" clickable v-ripple to="history">
             <q-item-section avatar>
               <q-icon name="history" />
             </q-item-section>
@@ -132,6 +135,7 @@ export default defineComponent({
     return {
       miniState: false,
       drawer: false,
+      darkMode: false,
     };
   },
   computed: {
@@ -140,6 +144,11 @@ export default defineComponent({
     },
     admin() {
       return this.$store.state.profileAdmin;
+    },
+  },
+  watch: {
+    darkMode(oldMode, newMode) {
+      this.$q.dark.set(!newMode);
     },
   },
   methods: {

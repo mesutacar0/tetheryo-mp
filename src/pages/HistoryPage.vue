@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-xs">
+  <div class="q-pa-sm">
     <q-card>
       <q-tabs
         v-model="tab"
@@ -16,14 +16,13 @@
 
       <q-separator />
 
-      <q-tab-panels v-model="tab" animated keep-alive>
-        <q-tab-panel name="Buy">
+      <q-tab-panels v-model="tab" animated>
+        <q-tab-panel class="q-pa-sm" name="Buy">
           <q-table
             :rows="rowsBuy"
             dense
             :columns="columns"
             row-key="id"
-            filter="filter"
             :rows-per-page-options="[25, 50]"
           >
             <template v-slot:header="props">
@@ -45,13 +44,12 @@
           </q-table>
         </q-tab-panel>
 
-        <q-tab-panel name="Sell">
+        <q-tab-panel class="q-pa-sm" name="Sell">
           <q-table
-            :rows="rows"
+            :rows="rowsSell"
             dense
             :columns="columns"
             row-key="id"
-            filter="filter"
             :rows-per-page-options="[25, 50]"
           >
             <template v-slot:header="props">
@@ -74,7 +72,7 @@
         </q-tab-panel>
       </q-tab-panels>
     </q-card>
-
+    <!--
     <q-btn-toggle
       class="q-mb-xs"
       v-model="orderType"
@@ -110,7 +108,8 @@
         </q-tr>
       </template>
     </q-table>
-  </div>
+
+  --></div>
 </template>
 
 <script>
@@ -141,7 +140,8 @@ const columns = [
   { name: "orderDate", label: "Tarih", field: "orderDate", align: "left" },
 ];
 
-const rows = [];
+const rowsBuy = [];
+const rowsSell = [];
 
 export default defineComponent({
   name: "HistoryPage",
@@ -156,11 +156,12 @@ export default defineComponent({
       row: {},
       confirm: false,
       cancelDialog: false,
+      tab: "Buy",
     };
   },
-  mounted() {
-    this.rowsBuy = getUserBuyingOrders(this.$store.state.user.uid);
-    this.rowsSell = getUserSellingOrders(this.$store.state.user.uid);
+  async mounted() {
+    this.rowsBuy = await getUserBuyingOrders(this.$store.state.user.uid);
+    this.rowsSell = await getUserSellingOrders(this.$store.state.user.uid);
   },
   computed: {
     user() {
@@ -174,18 +175,6 @@ export default defineComponent({
     },
   },
   components: {},
-  methods: {
-    filterApproved(rows) {
-      if (this.orderType == "one") return rows.filter((row) => !row.isApproved);
-
-      if (this.orderType == "two")
-        return rows.filter(
-          (row) => row.isApproved && row.isTraded && !row.isTradeApproved
-        );
-      if (this.orderType == "three")
-        return rows.filter((row) => row.isApproved && row.isTradeApproved);
-      if (this.orderType == "four") return rows;
-    },
-  },
+  methods: {},
 });
 </script>

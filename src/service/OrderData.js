@@ -111,28 +111,36 @@ export const getAllSellingOrders = () => {
   return orders;
 };
 
-export const getUserBuyingOrders = (userId) => {
-  const orders = ref([]);
-  const userOrders = buyingOrders.where("orderUserId", "==", userId);
-  const close = userOrders.onSnapshot((snapshot) => {
-    orders.value = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+export const getUserBuyingOrders = async (userId) => {
+  const orders = [];
+  const sOrders = await buyingOrders.where("orderUserId", "==", userId).get();
+
+  sOrders.forEach((ord) => {
+    orders.push(ord.data());
   });
-  onUnmounted(close);
+
+  const bOrders = await sellingOrders.where("tradeUserId", "==", userId).get();
+
+  bOrders.forEach((ord) => {
+    orders.push(ord.data());
+  });
+
   return orders;
 };
 
-export const getUserSellingOrders = (userId) => {
-  const orders = ref([]);
-  const userOrders = sellingOrders.where("orderUserId", "==", userId);
-  const close = userOrders.onSnapshot((snapshot) => {
-    orders.value = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+export const getUserSellingOrders = async (userId) => {
+  const orders = [];
+  const sOrders = await sellingOrders.where("orderUserId", "==", userId).get();
+
+  sOrders.forEach((ord) => {
+    orders.push(ord.data());
   });
-  onUnmounted(close);
+
+  const bOrders = await buyingOrders.where("tradeUserId", "==", userId).get();
+
+  bOrders.forEach((ord) => {
+    orders.push(ord.data());
+  });
+
   return orders;
 };

@@ -33,8 +33,7 @@
           </q-tab-panel>
 
           <q-tab-panel name="commission">
-            <div class="text-h6">Komisyonlar</div>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            <CommissionPage />
           </q-tab-panel>
         </q-tab-panels>
       </q-card>
@@ -47,6 +46,7 @@ import { defineComponent } from "vue";
 import UsersPage from "./adminPages/UsersPage.vue";
 import BuyingOrders from "./adminPages/BuyingOrders.vue";
 import SellingOrders from "./adminPages/SellingOrders.vue";
+import CommissionPage from "./adminPages/CommissionPage.vue";
 
 export default defineComponent({
   name: "AdminPage",
@@ -55,6 +55,6 @@ export default defineComponent({
       tab: "UsersPage",
     };
   },
-  components: { UsersPage, BuyingOrders, SellingOrders },
+  components: { UsersPage, BuyingOrders, SellingOrders, CommissionPage },
 });
 </script>

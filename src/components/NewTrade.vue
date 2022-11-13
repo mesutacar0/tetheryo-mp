@@ -1,10 +1,10 @@
 <template>
   <div class="q-pb-md">
     <q-bar dense class="lt-sm bg-primary text-white text-right rounded-borders">
-      Yeni Emir Girisi
+      {{ headerText() }}
     </q-bar>
     <q-toolbar class="bg-primary text-white rounded-borders">
-      <q-toolbar-title class="gt-xs">Yeni Emir Girisi</q-toolbar-title>
+      <q-toolbar-title class="gt-xs">{{ headerText() }} </q-toolbar-title>
       <NumberInput v-model="order.quantity" label="Ether Miktari" />
       <NumberInput v-model="order.price" label="Mangir Miktari" />
       <RoundButton icon="add" @c-click="confirm = true" :disable="!userApproved"
@@ -131,6 +131,11 @@ export default defineComponent({
           : Number(Number(price) - Number(commission)) + " alacaksiniz") +
         ". "
       );
+    },
+    headerText() {
+      return this.tradeType == "Buy"
+        ? "Yeni Alis Emri Girisi"
+        : "Yeni Satis Emri Girisi";
     },
   },
 });

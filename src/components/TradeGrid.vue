@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md">
+  <div class="q-pa-sm">
     <NewTrade :tradeType="tradeType" />
     <q-table
       :rows="orders"
