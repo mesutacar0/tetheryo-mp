@@ -12,8 +12,6 @@ export default defineComponent({
     return {};
   },
   components: { UserGrid },
-  mounted() {
-    console.log("UserPage mounted");
-  },
+  mounted() {},
 });
 </script>

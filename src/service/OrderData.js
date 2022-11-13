@@ -113,50 +113,26 @@ export const getAllSellingOrders = () => {
 
 export const getUserBuyingOrders = (userId) => {
   const orders = ref([]);
-  const close = buyingOrders
-    .where("orderUserId", "==", userId)
-    .onSnapshot((snapshot) => {
-      orders.value = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-    });
-  const close1 = sellingOrders
-    .where("tradeUserId", "==", userId)
-    .onSnapshot((snapshot) => {
-      orders.value.concat(
-        snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }))
-      );
-    });
+  const userOrders = buyingOrders.where("orderUserId", "==", userId);
+  const close = userOrders.onSnapshot((snapshot) => {
+    orders.value = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  });
   onUnmounted(close);
-  onUnmounted(close1);
   return orders;
 };
 
 export const getUserSellingOrders = (userId) => {
   const orders = ref([]);
-  const close = sellingOrders
-    .where("orderUserId", "==", userId)
-    .onSnapshot((snapshot) => {
-      orders.value = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-    });
-  const close1 = buyingOrders
-    .where("tradeUserId", "==", userId)
-    .onSnapshot((snapshot) => {
-      orders.value.concat(
-        snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }))
-      );
-    });
+  const userOrders = sellingOrders.where("orderUserId", "==", userId);
+  const close = userOrders.onSnapshot((snapshot) => {
+    orders.value = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  });
   onUnmounted(close);
-  onUnmounted(close1);
   return orders;
 };

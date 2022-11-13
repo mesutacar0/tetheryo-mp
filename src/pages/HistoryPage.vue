@@ -1,12 +1,87 @@
 <template>
   <div class="q-pa-xs">
+    <q-card>
+      <q-tabs
+        v-model="tab"
+        dense
+        class="text-grey"
+        active-color="primary"
+        indicator-color="primary"
+        align="justify"
+        narrow-indicator
+      >
+        <q-tab name="Buy" label="Aldiklarim" />
+        <q-tab name="Sell" label="Sattiklarim" />
+      </q-tabs>
+
+      <q-separator />
+
+      <q-tab-panels v-model="tab" animated keep-alive>
+        <q-tab-panel name="Buy">
+          <q-table
+            :rows="rowsBuy"
+            dense
+            :columns="columns"
+            row-key="id"
+            filter="filter"
+            :rows-per-page-options="[25, 50]"
+          >
+            <template v-slot:header="props">
+              <q-tr :props="props" class="bg-dark text-white">
+                <q-th v-for="col in props.cols" :key="col.name" :props="props">
+                  {{ col.label }}
+                </q-th>
+                <q-th auto-width />
+              </q-tr>
+            </template>
+
+            <template v-slot:body="props">
+              <q-tr :props="props">
+                <q-td v-for="col in props.cols" :key="col.name" :props="props">
+                  {{ col.value }}
+                </q-td>
+              </q-tr>
+            </template>
+          </q-table>
+        </q-tab-panel>
+
+        <q-tab-panel name="Sell">
+          <q-table
+            :rows="rows"
+            dense
+            :columns="columns"
+            row-key="id"
+            filter="filter"
+            :rows-per-page-options="[25, 50]"
+          >
+            <template v-slot:header="props">
+              <q-tr :props="props" class="bg-dark text-white">
+                <q-th v-for="col in props.cols" :key="col.name" :props="props">
+                  {{ col.label }}
+                </q-th>
+                <q-th auto-width />
+              </q-tr>
+            </template>
+
+            <template v-slot:body="props">
+              <q-tr :props="props">
+                <q-td v-for="col in props.cols" :key="col.name" :props="props">
+                  {{ col.value }}
+                </q-td>
+              </q-tr>
+            </template>
+          </q-table>
+        </q-tab-panel>
+      </q-tab-panels>
+    </q-card>
+
     <q-btn-toggle
       class="q-mb-xs"
       v-model="orderType"
       toggle-color="primary"
       :options="[
-        { label: 'Aldiklarim', value: 'one' },
-        { label: 'Sattiklarim', value: 'two' },
+        { label: 'Aldiklarim', value: 'Buy' },
+        { label: 'Sattiklarim', value: 'Sell' },
       ]"
     />
     <q-table
@@ -74,7 +149,8 @@ export default defineComponent({
   data() {
     return {
       columns,
-      rows,
+      rowsBuy,
+      rowsSell,
       filter: ref(""),
       orderType: ref("one"),
       row: {},
@@ -83,8 +159,8 @@ export default defineComponent({
     };
   },
   mounted() {
-    this.rows =
-      this.tradeType == "Buy" ? getUserBuyingOrders() : getUserSellingOrders();
+    this.rowsBuy = getUserBuyingOrders(this.$store.state.user.uid);
+    this.rowsSell = getUserSellingOrders(this.$store.state.user.uid);
   },
   computed: {
     user() {

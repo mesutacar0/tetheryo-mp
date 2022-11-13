@@ -63,9 +63,7 @@ export default store(function (/* { ssrContext } */) {
     },
     actions: {
       async getCurrentUser({ commit }, user) {
-        console.log("store getcurrentUser", user);
         const dbResults = await getUser(auth.currentUser.uid);
-        console.log("store dbresult", dbResults);
         commit("setProfileInfo", dbResults);
         commit("setProfileInitials");
         const token = await user.getIdTokenResult();

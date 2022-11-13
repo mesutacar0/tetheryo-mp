@@ -108,13 +108,13 @@ import RoundButton from "./RoundButton.vue";
 const columns = [
   {
     name: "price",
-    label: "Dolar Miktari",
+    label: "Mangir Miktari",
     field: "price",
     sortable: true,
   },
   {
     name: "quantity",
-    label: "Tether Miktari",
+    label: "Ether Miktari",
     field: "quantity",
     sortable: true,
   },
@@ -193,9 +193,9 @@ export default {
         "Toplam: " +
         (this.tradeType == "Buy"
           ? Number(Number(row.price) + Number(row.commission)) +
-            "$ odeyeceksiniz"
+            " odeyeceksiniz"
           : Number(Number(row.price) - Number(row.commission)) +
-            "$ alacaksiniz") +
+            " alacaksiniz") +
         ". Onayliyor musunuz?"
       );
     },

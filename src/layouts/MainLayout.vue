@@ -67,7 +67,7 @@
             <q-item-section> Hesabim </q-item-section>
           </q-item>
 
-          <q-item v-if="user" clickable v-ripple to="history">
+          <q-item v-if="admin" clickable v-ripple to="history">
             <q-item-section avatar>
               <q-icon name="history" />
             </q-item-section>

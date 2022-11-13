@@ -5,8 +5,8 @@
     </q-bar>
     <q-toolbar class="bg-primary text-white rounded-borders">
       <q-toolbar-title class="gt-xs">Yeni Emir Girisi</q-toolbar-title>
-      <NumberInput v-model="order.quantity" label="Tether Miktari" />
-      <NumberInput v-model="order.price" label="Dolar Miktari" />
+      <NumberInput v-model="order.quantity" label="Ether Miktari" />
+      <NumberInput v-model="order.price" label="Mangir Miktari" />
       <RoundButton icon="add" @c-click="confirm = true" :disable="!userApproved"
         >Emir Gir!</RoundButton
       > </q-toolbar
@@ -15,7 +15,7 @@
         <q-card-section class="row items-center">
           <q-avatar icon="help" color="primary" text-color="white" />
           <span class="q-ml-sm">
-            {{ order.price }}$ karsiligi olarak {{ order.quantity }} Tether
+            {{ order.price }} karsiligi olarak {{ order.quantity }} Ether
             <br />
             Oran: {{ rate }} Komisyon: {{ commission }}<br /><br />
             {{ text(order.price, commission) }}<br /><br />
@@ -127,8 +127,8 @@ export default defineComponent({
       return (
         "Toplam: " +
         (this.tradeType == "Buy"
-          ? Number(Number(price) + Number(commission)) + "$ odeyeceksiniz"
-          : Number(Number(price) - Number(commission)) + "$ alacaksiniz") +
+          ? Number(Number(price) + Number(commission)) + " odeyeceksiniz"
+          : Number(Number(price) - Number(commission)) + " alacaksiniz") +
         ". "
       );
     },
