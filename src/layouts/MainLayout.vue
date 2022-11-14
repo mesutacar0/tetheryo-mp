@@ -41,7 +41,7 @@
               <q-icon name="shopping_cart_checkout " />
             </q-item-section>
 
-            <q-item-section> Tether Sat </q-item-section>
+            <q-item-section> Satis Hesapla </q-item-section>
           </q-item>
 
           <q-item clickable v-ripple to="buy">
@@ -49,7 +49,7 @@
               <q-icon name="add_shopping_cart" />
             </q-item-section>
 
-            <q-item-section> Tether Al </q-item-section>
+            <q-item-section> Alis Hesapla </q-item-section>
           </q-item>
 
           <q-separator />
@@ -84,14 +84,6 @@
             </q-item-section>
 
             <q-item-section> Admin </q-item-section>
-          </q-item>
-
-          <q-item clickable v-ripple to="privacy">
-            <q-item-section avatar>
-              <q-icon name="policy" />
-            </q-item-section>
-
-            <q-item-section> Gizlilik </q-item-section>
           </q-item>
         </q-list>
       </q-scroll-area>

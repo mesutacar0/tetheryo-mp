@@ -108,13 +108,13 @@ import RoundButton from "./RoundButton.vue";
 const columns = [
   {
     name: "price",
-    label: "Mangir Miktari",
+    label: "DLR Miktari",
     field: "price",
     sortable: true,
   },
   {
     name: "quantity",
-    label: "Ether Miktari",
+    label: "TTR Miktari",
     field: "quantity",
     sortable: true,
   },

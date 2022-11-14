@@ -1,12 +1,15 @@
 <template>
   <div class="q-pb-md">
-    <q-bar dense class="lt-sm bg-primary text-white text-right rounded-borders">
+    <q-bar
+      dense
+      class="lt-sm bg-orange-8 text-white text-right rounded-borders"
+    >
       {{ headerText() }}
     </q-bar>
-    <q-toolbar class="bg-primary text-white rounded-borders">
+    <q-toolbar class="bg-orange-8 text-white rounded-borders">
       <q-toolbar-title class="gt-xs">{{ headerText() }} </q-toolbar-title>
-      <NumberInput v-model="order.quantity" label="Ether Miktari" />
-      <NumberInput v-model="order.price" label="Mangir Miktari" />
+      <NumberInput v-model="order.quantity" label="TTR Miktari" />
+      <NumberInput v-model="order.price" label="DLR Miktari" />
       <RoundButton icon="add" @c-click="confirm = true" :disable="!userApproved"
         >Emir Gir!</RoundButton
       > </q-toolbar
@@ -15,7 +18,7 @@
         <q-card-section class="row items-center">
           <q-avatar icon="help" color="primary" text-color="white" />
           <span class="q-ml-sm">
-            {{ order.price }} karsiligi olarak {{ order.quantity }} Ether
+            {{ order.price }} DLR karsiligi olarak {{ order.quantity }} TTR
             <br />
             Oran: {{ rate }} Komisyon: {{ commission }}<br /><br />
             {{ text(order.price, commission) }}<br /><br />

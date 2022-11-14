@@ -10,8 +10,8 @@
         align="justify"
         narrow-indicator
       >
-        <q-tab name="Buy" label="Aldiklarim" />
-        <q-tab name="Sell" label="Sattiklarim" />
+        <q-tab name="Buy" label="Alislar" />
+        <q-tab name="Sell" label="Satislar" />
       </q-tabs>
 
       <q-separator />
@@ -123,14 +123,14 @@ import {
 const columns = [
   {
     name: "quantity",
-    label: "Tether",
+    label: "TTR",
     field: "quantity",
     sortable: true,
     align: "left",
   },
   {
     name: "price",
-    label: "Dolar",
+    label: "DLR",
     field: "price",
     sortable: true,
     align: "left",
